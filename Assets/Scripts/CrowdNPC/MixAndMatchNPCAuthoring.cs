@@ -1,5 +1,4 @@
-﻿using JetBrains.Annotations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,6 @@ using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace CrowdNPC
 {
@@ -61,9 +59,9 @@ namespace CrowdNPC
 
     public struct MixAndMatchLayer
     {
-        public NativeArray<MixAndMatchElement> Elements;
-        public NativeArray<BatchMaterialID> Materials;
-        public NativeArray<Entity> ShareMaterialWith;
+        public MixAndMatchElement[] Elements;
+        public Material[] Materials;
+        public Entity[] ShareMaterialWith;
     }
     //Like CrowdSpawnerSystem, this authoring component can also be used as a regular component
     public class MixAndMatchNPCAuthoring : MonoBehaviour
@@ -109,24 +107,24 @@ namespace CrowdNPC
                         bakedSharedWith.Add(GetEntity(sharedWith.gameObject, TransformUsageFlags.Dynamic));
                     }
                     MixAndMatchLayer bakedLayer = new MixAndMatchLayer();
-                    //bakedLayer.Materials = new NativeArray<BatchMaterialID>(layer.Materials);
-                    bakedLayer.Elements = new NativeArray<MixAndMatchElement>(bakedElements.ToArray(),Allocator.Persistent);
-                    bakedLayer.ShareMaterialWith = new NativeArray<Entity>(bakedSharedWith.ToArray(),Allocator.Persistent);
+                    bakedLayer.Materials = layer.Materials;
+                    bakedLayer.Elements = bakedElements.ToArray();
+                    bakedLayer.ShareMaterialWith = bakedSharedWith.ToArray();
                     bakedLayers.Add(bakedLayer);
                 }
 
                 var entity = GetEntity(authoring.gameObject, TransformUsageFlags.Dynamic);
-                AddComponent(entity, new MixAndMatchNPC()
+                AddComponentObject(entity, new MixAndMatchNPC()
                 {
-                    Layers = new NativeArray<MixAndMatchLayer>(bakedLayers.ToArray(),Allocator.Persistent)
+                    Layers = bakedLayers.ToArray()
                 });
-                SetComponentEnabled<MixAndMatchNPC>(entity, true);
+                //There's no way to make a "SetComponentEnabled" on a managed component AFAIK, but thankfully component starts on enable
             }
         }
     }
 
-    public partial struct MixAndMatchNPC : IComponentData, IEnableableComponent
+    public class MixAndMatchNPC : IComponentData, IEnableableComponent
     {
-        public NativeArray<MixAndMatchLayer> Layers;
+        public MixAndMatchLayer[] Layers;
     } 
 }
