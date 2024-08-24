@@ -1,12 +1,8 @@
 ﻿using Latios.Kinemation;
 using Latios.Transforms;
 using Latios.Transforms.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 
 using static Unity.Entities.SystemAPI;
@@ -19,18 +15,24 @@ namespace CrowdNPC.Kinemation
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            float t = (float)Time.ElapsedTime;
+            new ExposedJob { clipLookup = GetComponentLookup<SingleClip>(true), et = (float)Time.ElapsedTime }.ScheduleParallel();
+        }
 
-            foreach ((var bones, var singleClip) in Query<DynamicBuffer<BoneReference>, RefRO<SingleClip>>())
+        [BurstCompile]
+        partial struct ExposedJob : IJobEntity
+        {
+            [ReadOnly] public ComponentLookup<SingleClip> clipLookup;
+            public float et;
+
+            public void Execute(TransformAspect transform, in BoneIndex boneIndex, in BoneOwningSkeletonReference skeletonRef)
             {
-                ref var clip = ref singleClip.ValueRO.blob.Value.clips[0];
-                var clipTime = clip.LoopToClipTime(t);
-                for (int i = 1; i < bones.Length; i++)
-                {
-                    var boneSampledLocalTransform = clip.SampleBone(i, clipTime);
-                    var boneTransformAspect = GetAspect<TransformAspect>(bones[i].bone);
-                    boneTransformAspect.localTransformQvvs = boneSampledLocalTransform;
-                }
+                if (boneIndex.index <= 0 || !clipLookup.HasComponent(skeletonRef.skeletonRoot))
+                    return;
+
+                ref var clip = ref clipLookup[skeletonRef.skeletonRoot].blob.Value.clips[0];
+                var clipTime = clip.LoopToClipTime(et);
+
+                transform.localTransformQvvs = clip.SampleBone(boneIndex.index, clipTime);
             }
         }
     }
