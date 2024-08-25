@@ -31,12 +31,20 @@ namespace CrowdNPC.Kinemation
 
                 ref var clip = ref clipLookup[skeletonRef.skeletonRoot].Blob.Value.clips[0];
                 var roSingleClip= clipLookup[skeletonRef.skeletonRoot];
-                var clipTime = clip.LoopToClipTime(et);
+
+                float clipTime = 0;
+
                 if (roSingleClip.HasBeenRandomized)
                 {
-                    clipTime = (roSingleClip.Offset * clip.duration) + clipTime * roSingleClip.SpeedMultiplier;
+                    clipTime = (roSingleClip.Offset * clip.duration)+ (et * roSingleClip.SpeedMultiplier);
                     clipTime = clipTime % clip.duration;
                 }
+                else
+                {
+                    clipTime= clip.LoopToClipTime(et);
+                }
+
+                //UnityEngine.Debug.Log($"Offset:{roSingleClip.Offset};SpeedMultiplier:{roSingleClip.SpeedMultiplier};RawET:{et};ClipTime: {clipTime}");
                 transform.localTransformQvvs = clip.SampleBone(boneIndex.index, clipTime);
             }
         }
