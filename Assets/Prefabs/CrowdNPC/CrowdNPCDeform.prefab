@@ -508,6 +508,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clip: {fileID: 7400000, guid: 4e4b5ec483701fa4cbb032751afb9afb, type: 2}
+  MinSpeedMultiplier: 0.25
+  MaxSpeedMultiplier: 3
+  MinOffset: 0
+  MaxOffset: 1
 --- !u!137 &4792346002694618041 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1150327597416263002, guid: b8a92e63d23f9a24cabee7d1283604d2,

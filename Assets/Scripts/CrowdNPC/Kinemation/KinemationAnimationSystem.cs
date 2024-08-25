@@ -29,9 +29,14 @@ namespace CrowdNPC.Kinemation
                 if (boneIndex.index <= 0 || !clipLookup.HasComponent(skeletonRef.skeletonRoot))
                     return;
 
-                ref var clip = ref clipLookup[skeletonRef.skeletonRoot].blob.Value.clips[0];
+                ref var clip = ref clipLookup[skeletonRef.skeletonRoot].Blob.Value.clips[0];
+                var roSingleClip= clipLookup[skeletonRef.skeletonRoot];
                 var clipTime = clip.LoopToClipTime(et);
-
+                if (roSingleClip.HasBeenRandomized)
+                {
+                    clipTime = (roSingleClip.Offset * clip.duration) + clipTime * roSingleClip.SpeedMultiplier;
+                    clipTime = clipTime % clip.duration;
+                }
                 transform.localTransformQvvs = clip.SampleBone(boneIndex.index, clipTime);
             }
         }
