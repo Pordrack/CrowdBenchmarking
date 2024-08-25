@@ -12,7 +12,7 @@ namespace CrowdNPC
     [System.Serializable]
     public struct MixAndMatchElementAuthoring
     {
-        [Tooltip("Leave empty if you want an option where no element of this layer is present (hair for exemple)")]
+        [Tooltip("Dont leave empty ! If you want an empty possibility, use IncludeEmptuPossibility on layer")]
         public SkinnedMeshRenderer Renderer;
         [Tooltip("If this element is chosen, the elements of these layers will all be deactivated. Layers must come after this element's one in the array for the feature to work")]
         public int[] DisabledLayers;
@@ -32,10 +32,11 @@ namespace CrowdNPC
         public MixAndMatchElementAuthoring[] Elements;
         public Material[] Materials;
         public SkinnedMeshRenderer[] ShareMaterialWith;
+        public bool IncludeEmptyPossibility;
 
         public MixAndMatchElementAuthoring Compute()
         {
-            int chosenElementIndex = UnityEngine.Random.Range(0, Elements.Length);
+            int chosenElementIndex = UnityEngine.Random.Range(0, Elements.Length + (IncludeEmptyPossibility ? 1 : 0));
             int chosenMaterialIndex = UnityEngine.Random.Range(0, Materials.Length);
             List<int> disabledLayers = new List<int>();
 
@@ -62,6 +63,7 @@ namespace CrowdNPC
         public MixAndMatchElement[] Elements;
         public Material[] Materials;
         public Entity[] ShareMaterialWith;
+        public bool IncludeEmptyPossibility;
     }
     //Like CrowdSpawnerSystem, this authoring component can also be used as a regular component
     public class MixAndMatchNPCAuthoring : MonoBehaviour
@@ -97,7 +99,11 @@ namespace CrowdNPC
                     {
                         MixAndMatchElement bakedElement = new MixAndMatchElement();
                         bakedElement.DisabledLayers = new NativeArray<int>(element.DisabledLayers, Allocator.Persistent);
-                        bakedElement.RendererEntity = Entity.Null;//(element.Renderer.gameObject!=null?GetEntity(element.Renderer.gameObject, TransformUsageFlags.Dynamic):Entity.Null);
+
+                        if (element.Renderer == null)
+                            Debug.LogError("Cannot have a null renderer in a MixAndMatchElementAuthoring, if you want an empty possibiluty, use the IncludeEmptyPossibility of Layer !");
+
+                        bakedElement.RendererEntity = GetEntity(element.Renderer.gameObject, TransformUsageFlags.Dynamic);
                         bakedElements.Add(bakedElement);
                     }
 

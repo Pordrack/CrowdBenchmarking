@@ -58,10 +58,9 @@ MonoBehaviour:
     ShareMaterialWith:
     - {fileID: 4166364451368281457}
     - {fileID: 5557046307377064777}
+    IncludeEmptyPossibility: 0
   - LayerName: Hair
     Elements:
-    - Renderer: {fileID: 0}
-      DisabledLayers: 
     - Renderer: {fileID: 6790360157188578214}
       DisabledLayers: 02000000
     - Renderer: {fileID: 4966679247146561879}
@@ -76,6 +75,7 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 44628786ef5f86e4cb54bd2a3dc5b678, type: 2}
     - {fileID: 2100000, guid: 7acd764f5968cc146bd00bc742c2f479, type: 2}
     ShareMaterialWith: []
+    IncludeEmptyPossibility: 1
   - LayerName: Hat
     Elements:
     - Renderer: {fileID: 3587975495681718625}
@@ -90,6 +90,7 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 44628786ef5f86e4cb54bd2a3dc5b678, type: 2}
     - {fileID: 2100000, guid: 7acd764f5968cc146bd00bc742c2f479, type: 2}
     ShareMaterialWith: []
+    IncludeEmptyPossibility: 0
   - LayerName: Top
     Elements:
     - Renderer: {fileID: 7807209236850642028}
@@ -102,6 +103,7 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 2cb6efeea33c1014a93203ef751ee059, type: 2}
     - {fileID: 2100000, guid: f84e335d4af9be64d8c96b75887ad697, type: 2}
     ShareMaterialWith: []
+    IncludeEmptyPossibility: 0
   - LayerName: Legwear
     Elements:
     - Renderer: {fileID: 8015713633709235211}
@@ -114,6 +116,7 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 2cb6efeea33c1014a93203ef751ee059, type: 2}
     - {fileID: 2100000, guid: f84e335d4af9be64d8c96b75887ad697, type: 2}
     ShareMaterialWith: []
+    IncludeEmptyPossibility: 0
   - LayerName: Shoes
     Elements:
     - Renderer: {fileID: 8652564647266299236}
@@ -121,6 +124,7 @@ MonoBehaviour:
     Materials:
     - {fileID: 2100000, guid: e286d2b9b4cfe534fad4d76388ba76bd, type: 2}
     ShareMaterialWith: []
+    IncludeEmptyPossibility: 0
 --- !u!1001 &4137082082732903796
 PrefabInstance:
   m_ObjectHideFlags: 0
