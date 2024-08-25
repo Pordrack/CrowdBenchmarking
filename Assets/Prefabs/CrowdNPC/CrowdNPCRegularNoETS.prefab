@@ -90,7 +90,7 @@ MonoBehaviour:
     - {fileID: 2100000, guid: 44628786ef5f86e4cb54bd2a3dc5b678, type: 2}
     - {fileID: 2100000, guid: 7acd764f5968cc146bd00bc742c2f479, type: 2}
     ShareMaterialWith: []
-    IncludeEmptyPossibility: 0
+    IncludeEmptyPossibility: 1
   - LayerName: Top
     Elements:
     - Renderer: {fileID: 7807209236850642028}

@@ -21,7 +21,7 @@ namespace CrowdNPC
     public struct MixAndMatchElement
     {
         public Entity RendererEntity;
-        public NativeArray<int> DisabledLayers;
+        public int[] DisabledLayers;
     }
 
     [System.Serializable]
@@ -98,7 +98,7 @@ namespace CrowdNPC
                     foreach (var element in layer.Elements)
                     {
                         MixAndMatchElement bakedElement = new MixAndMatchElement();
-                        bakedElement.DisabledLayers = new NativeArray<int>(element.DisabledLayers, Allocator.Persistent);
+                        bakedElement.DisabledLayers = element.DisabledLayers;
 
                         if (element.Renderer == null)
                             Debug.LogError("Cannot have a null renderer in a MixAndMatchElementAuthoring, if you want an empty possibiluty, use the IncludeEmptyPossibility of Layer !");
@@ -116,6 +116,7 @@ namespace CrowdNPC
                     bakedLayer.Materials = layer.Materials;
                     bakedLayer.Elements = bakedElements.ToArray();
                     bakedLayer.ShareMaterialWith = bakedSharedWith.ToArray();
+                    bakedLayer.IncludeEmptyPossibility = layer.IncludeEmptyPossibility;
                     bakedLayers.Add(bakedLayer);
                 }
 

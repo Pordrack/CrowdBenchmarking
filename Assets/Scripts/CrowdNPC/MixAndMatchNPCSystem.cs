@@ -70,12 +70,11 @@ namespace CrowdNPC
                         MaterialMeshInfo mmi= EntityManager.GetComponentData<MaterialMeshInfo>(element.RendererEntity);
                         mmi.MaterialID = chosenMaterialBatchMaterialId;
                         ecb.SetComponent(element.RendererEntity,mmi);
-                        disabledLayers.AddRange(layer.Elements[chosenElementIndex].DisabledLayers);
+                        disabledLayers.AddRange(element.DisabledLayers);
                     }
 
                     foreach(var disabledLayerIndex in disabledLayers)
                     {
-                        Debug.Log("Disabling layer " + disabledLayerIndex);
                         var disabledLayerElements = mixAndMatchNpc.Layers[disabledLayerIndex].Elements;
                         foreach(var element in disabledLayerElements)
                         {
