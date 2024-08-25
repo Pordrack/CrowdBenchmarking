@@ -24,10 +24,14 @@ namespace CrowdNPC
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(transform.position, new Vector3(SpawnAreaDimensions.x, 0, SpawnAreaDimensions.y));
+        }
+
+        private void OnDrawGizmosSelected()
+        {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, IndividualRadius);
         }

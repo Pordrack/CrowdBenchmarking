@@ -75,6 +75,7 @@ namespace CrowdNPC
 
                     foreach(var disabledLayerIndex in disabledLayers)
                     {
+                        Debug.Log("Disabling layer " + disabledLayerIndex);
                         var disabledLayerElements = mixAndMatchNpc.Layers[disabledLayerIndex].Elements;
                         foreach(var element in disabledLayerElements)
                         {
