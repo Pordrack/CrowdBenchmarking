@@ -507,7 +507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ae616f881f96da4799b8ddc1de04edc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clip: {fileID: 7400000, guid: 4e4b5ec483701fa4cbb032751afb9afb, type: 2}
+  clip: {fileID: 7400000, guid: 9e02fdc71387de548a73d9d417d3c5e6, type: 2}
   MinSpeedMultiplier: 0.25
   MaxSpeedMultiplier: 3
   MinOffset: 0
