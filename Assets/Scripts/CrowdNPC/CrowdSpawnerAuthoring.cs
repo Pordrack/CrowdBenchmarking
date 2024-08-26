@@ -13,12 +13,33 @@ namespace CrowdNPC
         public GameObject Prefab;
         public float IndividualRadius;
         public Vector2 SpawnAreaDimensions;
+        public bool SpawnOnStart = true;
+
+        #region Singleton pattern
+        public static CrowdSpawnerAuthoring Instance { get; private set; }
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
+        }
+        #endregion
 
         public void Start()
         {
+            if (SpawnOnStart)
+                Spawn();
+        }
+
+        public void Spawn()
+        {
+            if(!gameObject.activeInHierarchy) return;
             for (int i = 0; i < SpawnCount; i++)
             {
-                Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(-0.5f*SpawnAreaDimensions.x, 0.5f*SpawnAreaDimensions.x), 0, UnityEngine.Random.Range(-0.5f*SpawnAreaDimensions.y, 0.5f*SpawnAreaDimensions.y));
+                Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(-0.5f * SpawnAreaDimensions.x, 0.5f * SpawnAreaDimensions.x), 0, UnityEngine.Random.Range(-0.5f * SpawnAreaDimensions.y, 0.5f * SpawnAreaDimensions.y));
                 Instantiate(Prefab, transform.position + spawnPosition, Quaternion.identity, transform);
             }
         }
@@ -48,7 +69,8 @@ namespace CrowdNPC
                     SpawnCount = authoring.SpawnCount,
                     IndividualRadius = authoring.IndividualRadius,
                     SpawnAreaDimensions = authoring.SpawnAreaDimensions,
-                    SpawnerPosition = new float3(authoring.transform.position.x, authoring.transform.position.y, authoring.transform.position.z)
+                    SpawnerPosition = new float3(authoring.transform.position.x, authoring.transform.position.y, authoring.transform.position.z),
+                    SpawnOnStart=authoring.SpawnOnStart,
                 });
             }
         }
@@ -61,6 +83,7 @@ namespace CrowdNPC
         public float IndividualRadius;
         public float2 SpawnAreaDimensions;
         public float3 SpawnerPosition;
+        public bool SpawnOnStart;
     }
 }
 

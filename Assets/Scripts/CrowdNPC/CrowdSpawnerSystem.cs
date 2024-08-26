@@ -12,41 +12,57 @@ using Unity.Mathematics;
 
 namespace CrowdNPC
 {
-    public partial struct CrowdSpawnerSystem : ISystem
+    public partial class CrowdSpawnerSystem : SystemBase
     {
         NativeArray<Entity> _entities;
-        public void OnCreate(ref SystemState state)
+        //True if a manual spawn was triggered. Force the spawning if the crowd spawner has a spawn on start set to false. Only trigger the spawn once.
+        private bool _forceSpawn;
+        private int _forceSpawnAmount;
+        protected override void OnCreate()
         {
-            state.RequireForUpdate<CrowdSpawner>();
+            RequireForUpdate<CrowdSpawner>();
+            UnityEngine.Debug.Log("CrowdSpawnerSystem created");
         }
 
-        public void OnUpdate(ref SystemState state)
+        public void Spawn(int forceSpawnAmount=10)
         {
-            state.Enabled = false;
+            _forceSpawn = true;
+            _forceSpawnAmount = forceSpawnAmount;
+            _entities.Dispose();
+            Enabled = true;
+        }
+
+        protected override void OnUpdate()
+        {
             var crowdSpawner = SystemAPI.GetSingleton<CrowdSpawner>();
             var crowdSpawnerEntity=SystemAPI.GetSingletonEntity<CrowdSpawner>();
-            _entities = new NativeArray<Entity>(crowdSpawner.SpawnCount,Allocator.Persistent);
-            state.EntityManager.Instantiate(crowdSpawner.PrefabEntity, _entities);
+            if (!crowdSpawner.SpawnOnStart && _forceSpawn==false) return;
+            int spawnCount=crowdSpawner.SpawnCount;
+            if(_forceSpawn)
+            {
+                spawnCount=_forceSpawnAmount;
+            }
 
-            for (int i = 0; i < crowdSpawner.SpawnCount; i++)
+            _entities = new NativeArray<Entity>(spawnCount,Allocator.Persistent);
+            EntityManager.Instantiate(crowdSpawner.PrefabEntity, _entities);
+
+            for (int i = 0; i < spawnCount; i++)
             {
                 var currentEntity = _entities[i];
                 var spawnAreaDimension = crowdSpawner.SpawnAreaDimensions;
                 var randomPosVariation= new float3(UnityEngine.Random.Range(-0.5f*spawnAreaDimension.x, 0.5f*spawnAreaDimension.x), 0, UnityEngine.Random.Range(-0.5f*spawnAreaDimension.y, 0.5f*spawnAreaDimension.y));
                 var newPos = crowdSpawner.SpawnerPosition + randomPosVariation;
-                state.EntityManager.GetAspect<TransformAspect>(currentEntity).worldPosition=newPos;
-            }      
+                EntityManager.GetAspect<TransformAspect>(currentEntity).worldPosition=newPos;
+            }
+            crowdSpawner.SpawnOnStart = false;
+            _forceSpawn = false;
+            Enabled = false;
         }
 
-        public void OnDestroy(ref SystemState state)
+        protected override void OnDestroy()
         {
+            UnityEngine.Debug.Log("CrowdSpawnerSystem destroyed");
             _entities.Dispose();
-        }
-
-        [BurstDiscard]
-        private void DebugInfo(string param)
-        {
-            UnityEngine.Debug.Log(param);
         }
     }
 }
