@@ -21,7 +21,6 @@ namespace CrowdNPC
         protected override void OnCreate()
         {
             RequireForUpdate<CrowdSpawner>();
-            UnityEngine.Debug.Log("CrowdSpawnerSystem created");
         }
 
         public void Spawn(int forceSpawnAmount=10)
@@ -61,7 +60,6 @@ namespace CrowdNPC
 
         protected override void OnDestroy()
         {
-            UnityEngine.Debug.Log("CrowdSpawnerSystem destroyed");
             _entities.Dispose();
         }
     }

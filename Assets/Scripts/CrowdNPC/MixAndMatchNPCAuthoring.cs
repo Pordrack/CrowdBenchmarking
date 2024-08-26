@@ -54,6 +54,10 @@ namespace CrowdNPC
                 Elements[i].Renderer.sharedMaterial = Materials[chosenMaterialIndex];
             }
 
+            if(chosenElementIndex >= Elements.Length)
+            {
+                return new MixAndMatchElementAuthoring();
+            }
             return Elements[chosenElementIndex];
         }
     }
@@ -76,6 +80,7 @@ namespace CrowdNPC
             foreach (var layer in Layers)
             {
                 var chosenElement = layer.Compute();
+                if(chosenElement.Renderer == null) continue;
                 excludedLayers.AddRange(chosenElement.DisabledLayers);
             }
             foreach (var excludedLayerIndex in excludedLayers)

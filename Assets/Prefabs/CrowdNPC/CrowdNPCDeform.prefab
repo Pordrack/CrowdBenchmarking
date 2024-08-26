@@ -508,8 +508,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clip: {fileID: 7400000, guid: 9e02fdc71387de548a73d9d417d3c5e6, type: 2}
-  MinSpeedMultiplier: 0.25
-  MaxSpeedMultiplier: 3
+  MinSpeedMultiplier: 0.5
+  MaxSpeedMultiplier: 2
   MinOffset: 0
   MaxOffset: 1
 --- !u!137 &4792346002694618041 stripped

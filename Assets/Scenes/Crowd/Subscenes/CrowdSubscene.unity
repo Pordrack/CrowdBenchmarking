@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &85016535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,7 +155,7 @@ MonoBehaviour:
   Prefab: {fileID: 5304655578095380400, guid: 8d74872940c22e346a6369d544e5efac, type: 3}
   IndividualRadius: 0.58
   SpawnAreaDimensions: {x: 20, y: 16.4}
-  SpawnOnStart: 1
+  SpawnOnStart: 0
 --- !u!4 &85016536
 Transform:
   m_ObjectHideFlags: 0
@@ -187,7 +187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1884985346
 MonoBehaviour:
   m_ObjectHideFlags: 0

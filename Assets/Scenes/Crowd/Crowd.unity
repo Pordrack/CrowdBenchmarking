@@ -231,7 +231,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ECS Vertex Skinning
+  m_text: ECS Deform
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -265,7 +265,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 32
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1239,7 +1239,7 @@ MonoBehaviour:
   Prefab: {fileID: 397661129701377583, guid: b7ad8e4fa6b4eb6408b46a59450b5fdf, type: 3}
   IndividualRadius: 0.58
   SpawnAreaDimensions: {x: 20, y: 16.4}
-  SpawnOnStart: 1
+  SpawnOnStart: 0
 --- !u!1 &726151914
 GameObject:
   m_ObjectHideFlags: 0
