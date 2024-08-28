@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &85016535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1884985346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,11 +200,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d05403e70b268434d95b32ad284f7984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnCount: 10
+  SpawnCount: 1
   Prefab: {fileID: 473400868319800379, guid: f0bfaa8c05835ff4c8dde1dde5a11d43, type: 3}
   IndividualRadius: 0.58
   SpawnAreaDimensions: {x: 20, y: 16.4}
-  SpawnOnStart: 0
+  SpawnOnStart: 1
 --- !u!4 &1884985347
 Transform:
   m_ObjectHideFlags: 0
