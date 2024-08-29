@@ -70,6 +70,8 @@ namespace CrowdNPC
                     IndividualRadius = authoring.IndividualRadius,
                     SpawnAreaDimensions = authoring.SpawnAreaDimensions,
                     SpawnerPosition = new float3(authoring.transform.position.x, authoring.transform.position.y, authoring.transform.position.z),
+                    BottomLeftCorner = new float2(authoring.transform.position.x - authoring.SpawnAreaDimensions.x / 2, authoring.transform.position.z - authoring.SpawnAreaDimensions.y / 2),
+                    TopRightCorner = new float2(authoring.transform.position.x + authoring.SpawnAreaDimensions.x / 2, authoring.transform.position.z + authoring.SpawnAreaDimensions.y / 2),
                     SpawnOnStart=authoring.SpawnOnStart,
                 });
             }
@@ -83,6 +85,8 @@ namespace CrowdNPC
         public float IndividualRadius;
         public float2 SpawnAreaDimensions;
         public float3 SpawnerPosition;
+        public float2 BottomLeftCorner;
+        public float2 TopRightCorner;
         public bool SpawnOnStart;
     }
 }
