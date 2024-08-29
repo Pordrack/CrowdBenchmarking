@@ -18,6 +18,20 @@ public class PhysicNPCAuthoring : MonoBehaviour
     public float MaxWeight = 1;
     public AnimationCurve WeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
+    public float MinDampening;
+    public float MaxDampening;
+    public AnimationCurve DampeningCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+    public float MinPreferredRadius;
+    public float MaxPreferredRadius;
+    public AnimationCurve PreferredRadiusCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+    [Tooltip("Instead of being purely random, the preferred radius is linked to the dampening with a randomized ratio")]
+    public float MinDampeningToPreferredRadiusRatio;
+    public float MaxDampeningToPreferredRadiusRatio;
+    public AnimationCurve DampeningToPreferredRadiusRatioCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+
     public class Baker: Baker<PhysicNPCAuthoring>
     {
         public override void Bake(PhysicNPCAuthoring authoring)
