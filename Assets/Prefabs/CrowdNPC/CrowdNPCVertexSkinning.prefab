@@ -264,10 +264,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3866542512120311845, guid: b7ad8e4fa6b4eb6408b46a59450b5fdf,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7883535696652745163}
-    - targetCorrespondingSourceObject: {fileID: 3866542512120311845, guid: b7ad8e4fa6b4eb6408b46a59450b5fdf,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 8690675091231656140}
   m_SourcePrefab: {fileID: 100100000, guid: b7ad8e4fa6b4eb6408b46a59450b5fdf, type: 3}
 --- !u!1 &3944496632797878833 stripped
@@ -293,29 +289,6 @@ MonoBehaviour:
   MaxSpeedMultiplier: 2
   MinOffset: 0
   MaxOffset: 1
---- !u!136 &7883535696652745163
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3944496632797878833}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2.8839412
-  m_Direction: 1
-  m_Center: {x: -0, y: 0.9419706, z: 0}
 --- !u!114 &8690675091231656140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -329,7 +302,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Weight: 1
-  Radius: 0.5
   MinVelocityAmplitude: 1
   MaxVelocityAmplitude: 5
   VelocityAmplitudeCurve:
@@ -359,6 +331,84 @@ MonoBehaviour:
   MinWeight: 1
   MaxWeight: 1
   WeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MinDampening: 0
+  MaxDampening: 0
+  DampeningCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MinPreferredRadius: 0
+  MaxPreferredRadius: 0
+  PreferredRadiusCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  MinDampeningToPreferredRadiusRatio: 0
+  MaxDampeningToPreferredRadiusRatio: 0
+  DampeningToPreferredRadiusRatioCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3

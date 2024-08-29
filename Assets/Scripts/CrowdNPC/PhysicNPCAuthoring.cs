@@ -10,7 +10,6 @@ using static UnityEngine.EventSystems.EventTrigger;
 public class PhysicNPCAuthoring : MonoBehaviour
 {
     public float Weight = 1;
-    public float Radius  =1;
     public float MinVelocityAmplitude = 0;
     public float MaxVelocityAmplitude = 1;
     public AnimationCurve VelocityAmplitudeCurve = AnimationCurve.Linear(0, 0, 1, 1);
@@ -40,7 +39,6 @@ public class PhysicNPCAuthoring : MonoBehaviour
             AddComponent(entity, new PhysicNPC
             {
                 Weight = authoring.Weight,
-                Radius = authoring.Radius,
                 Velocity= new float2(0,0)
             });
             AddComponentObject(entity, new PhysicNPCRandomConstraints
@@ -54,21 +52,14 @@ public class PhysicNPCAuthoring : MonoBehaviour
             });
         }
     }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, Radius);
-    }
-#endif
 }
 
 public partial struct PhysicNPC : IComponentData
 {
     public float Weight;
-    public float Radius;
     public float2 Velocity;
+    public float Dampening;
+    public float PreferredRadius;
 }
 
 public class PhysicNPCRandomConstraints : IComponentData, IEnableableComponent

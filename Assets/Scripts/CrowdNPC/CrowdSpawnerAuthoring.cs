@@ -11,6 +11,7 @@ namespace CrowdNPC
     {
         public int SpawnCount;
         public GameObject Prefab;
+        public float IndividualRadius;
         public Vector2 SpawnAreaDimensions;
         public bool SpawnOnStart = true;
         public Vector2 InterestPoint;
@@ -50,6 +51,12 @@ namespace CrowdNPC
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(transform.position, new Vector3(SpawnAreaDimensions.x, 0, SpawnAreaDimensions.y));
         }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.position, IndividualRadius);
+        }
 #endif
 
         public class Baker : Baker<CrowdSpawnerAuthoring>
@@ -61,6 +68,7 @@ namespace CrowdNPC
                 {
                     PrefabEntity = GetEntity(authoring.Prefab, TransformUsageFlags.Dynamic),
                     SpawnCount = authoring.SpawnCount,
+                    IndividualRadius = authoring.IndividualRadius,
                     SpawnAreaDimensions = authoring.SpawnAreaDimensions,
                     SpawnerPosition = new float3(authoring.transform.position.x, authoring.transform.position.y, authoring.transform.position.z),
                     BottomLeftCorner = new float2(authoring.transform.position.x - authoring.SpawnAreaDimensions.x / 2, authoring.transform.position.z - authoring.SpawnAreaDimensions.y / 2),
@@ -75,6 +83,7 @@ namespace CrowdNPC
     {
         public Entity PrefabEntity;
         public int SpawnCount;
+        public float IndividualRadius;
         public float2 SpawnAreaDimensions;
         public float3 SpawnerPosition;
         public float2 BottomLeftCorner;

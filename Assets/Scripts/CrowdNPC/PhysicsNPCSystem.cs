@@ -1,5 +1,4 @@
-﻿using Latios.Psyshock;
-using Latios.Transforms;
+﻿using Latios.Transforms;
 using System.ComponentModel;
 using Unity.Burst;
 using Unity.Collections;
@@ -14,11 +13,11 @@ namespace CrowdNPC
         static float elasticity = 0f;
 
         //Take self npc, other npc, elasticity, and returns new velocity for self ball
-        public static void HandleBallCollision(ref PhysicNPC selfBallData, ref float2 selfBallPosition, in PhysicNPC otherBallData, in float2 otherBallPosition, float restitution)
+        public static void HandleBallCollision(ref PhysicNPC selfBallData, ref float2 selfBallPosition, in PhysicNPC otherBallData, in float2 otherBallPosition, float radius, float restitution)
         {
             var distance = math.distance(selfBallPosition, otherBallPosition);
             var direction = (1 / distance) * (otherBallPosition - selfBallPosition);
-            var correction=(selfBallData.Radius + otherBallData.Radius - distance) / 2;
+            var correction=(2* radius - distance) / 2;
             selfBallPosition -= direction * correction;
             var v1 = math.dot(selfBallData.Velocity, direction);
             var v2 = math.dot(otherBallData.Velocity, direction);
@@ -35,11 +34,10 @@ namespace CrowdNPC
 
             var query=new EntityQueryDesc
             {
-                All = new ComponentType[] { ComponentType.ReadOnly<PhysicNPC>(), ComponentType.ReadOnly<Collider>(), ComponentType.ReadOnly<WorldTransform>() }
+                All = new ComponentType[] { ComponentType.ReadOnly<PhysicNPC>(), ComponentType.ReadOnly<WorldTransform>() }
             };
             var otherNPCs = GetEntityQuery(query);
             var otherNPCsDatas=otherNPCs.ToComponentDataArray<PhysicNPC>(Allocator.TempJob);
-            var otherNPCsColliders=otherNPCs.ToComponentDataArray<Collider>(Allocator.TempJob);
             var otherNPCsTransforms=otherNPCs.ToComponentDataArray<WorldTransform>(Allocator.TempJob);
             var otherNPCsEntities=otherNPCs.ToEntityArray(Allocator.TempJob);
 
@@ -49,7 +47,6 @@ namespace CrowdNPC
                 CrowdSpawner = crowdSpawner,
                 Elasticity=elasticity,
                 OtherNPCsData = otherNPCsDatas,
-                OtherNPCsColliders = otherNPCsColliders,
                 OtherNPCsTransforms = otherNPCsTransforms,
                 OtherNPCsEntities = otherNPCsEntities
             };
@@ -65,50 +62,54 @@ namespace CrowdNPC
         [NativeDisableParallelForRestriction]
         public NativeArray<PhysicNPC> OtherNPCsData;
         [NativeDisableParallelForRestriction]
-        public NativeArray<Collider> OtherNPCsColliders;
-        [NativeDisableParallelForRestriction]
         public NativeArray<WorldTransform> OtherNPCsTransforms;
         [NativeDisableParallelForRestriction]
         public NativeArray<Entity> OtherNPCsEntities;
 
         public float Elasticity;
 
+        public static float SqrDistance(float2 a, float2 b)
+        {
+            float2 c = a - b;
+            return (c.x * c.x + c.y * c.y);
+        }
 
-        public void Execute(ref PhysicNPC npcData, in Collider npcCollider, TransformAspect npcTransformAspect, in Entity npcEntity)
+        public void Execute(ref PhysicNPC npcData, TransformAspect npcTransformAspect, in Entity npcEntity)
         {
             float2 selfPosition = new float2(npcTransformAspect.worldPosition.x, npcTransformAspect.worldPosition.z);
+            float radius=CrowdSpawner.IndividualRadius;
+            float sqrCollisionDistance = (radius + radius) * (radius + radius);
             //We handle change of velocity due to collision with other npcs
-            for(int i=0;i<OtherNPCsData.Length;i++)
+            for (int i = 0; i < OtherNPCsData.Length; i++)
             {
                 var otherEntity = OtherNPCsEntities[i];
                 if (npcEntity == otherEntity) continue;
-;                var otherHitbox = OtherNPCsColliders[i];
                 // DistanceBetween() returns true if the found distance is less than the maximum distance. 
                 // Intersections will have negative distances, so a maximum distance of 0f will only return true if the colliders intersect.
                 var selfWorldTransform = npcTransformAspect.worldTransform;
                 var otherTransform = OtherNPCsTransforms[i];
-                if (Physics.DistanceBetween(in npcCollider, in selfWorldTransform, in otherHitbox, in otherTransform.worldTransform, 0f, out _))
+                float2 otherPosition = new float2(otherTransform.worldTransform.position.x, otherTransform.worldTransform.position.z);
+                if (SqrDistance(selfPosition, otherPosition) < sqrCollisionDistance)
                 {
                     var otherData = OtherNPCsData[i];
-                    float2 otherPosition = new float2(otherTransform.worldTransform.position.x, otherTransform.worldTransform.position.z);
-                    PhysicsNPCSystem.HandleBallCollision(ref npcData,ref selfPosition, otherData, otherPosition, 1-Elasticity);
+                    PhysicsNPCSystem.HandleBallCollision(ref npcData, ref selfPosition, otherData, otherPosition, radius, 1 - Elasticity);
                     break;
                 }
             }
 
             float2 currentVelocity = npcData.Velocity;
             //We handle change of velocity due to collision with the external walls
-            if (selfPosition.x - npcData.Radius < CrowdSpawner.BottomLeftCorner.x
-                || selfPosition.x + npcData.Radius > CrowdSpawner.TopRightCorner.x)
+            if (selfPosition.x - radius < CrowdSpawner.BottomLeftCorner.x
+                || selfPosition.x + radius > CrowdSpawner.TopRightCorner.x)
             {
-                selfPosition.x = UnityEngine.Mathf.Clamp(selfPosition.x,CrowdSpawner.BottomLeftCorner.x + npcData.Radius, CrowdSpawner.TopRightCorner.x - npcData.Radius);
+                selfPosition.x = UnityEngine.Mathf.Clamp(selfPosition.x,CrowdSpawner.BottomLeftCorner.x + radius, CrowdSpawner.TopRightCorner.x - radius);
                 currentVelocity.x = -currentVelocity.x;
             }
 
-            if (selfPosition.y - npcData.Radius < CrowdSpawner.BottomLeftCorner.y
-                || selfPosition.y + npcData.Radius > CrowdSpawner.TopRightCorner.y)
+            if (selfPosition.y - radius < CrowdSpawner.BottomLeftCorner.y
+                || selfPosition.y + radius > CrowdSpawner.TopRightCorner.y)
             {
-                selfPosition.y = UnityEngine.Mathf.Clamp(selfPosition.y, CrowdSpawner.BottomLeftCorner.y + npcData.Radius, CrowdSpawner.TopRightCorner.y - npcData.Radius);
+                selfPosition.y = UnityEngine.Mathf.Clamp(selfPosition.y, CrowdSpawner.BottomLeftCorner.y + radius, CrowdSpawner.TopRightCorner.y - radius);
                 currentVelocity.y = -currentVelocity.y;
             }
 
@@ -116,8 +117,9 @@ namespace CrowdNPC
             
             selfPosition += currentVelocity * DeltaTime;
 
+            //Target position
+
             npcData.Velocity = currentVelocity;
-            //UnityEngine.Debug.Log(currentVelocity);
             npcTransformAspect.worldPosition = new float3(selfPosition.x, npcTransformAspect.worldPosition.y, selfPosition.y);
         }
     }

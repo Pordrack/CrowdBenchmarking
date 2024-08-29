@@ -153,9 +153,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpawnCount: 1000
   Prefab: {fileID: 5304655578095380400, guid: 8d74872940c22e346a6369d544e5efac, type: 3}
-  IndividualRadius: 0.58
+  IndividualRadius: 0
   SpawnAreaDimensions: {x: 20, y: 16.4}
   SpawnOnStart: 0
+  InterestPoint: {x: 0, y: 0}
 --- !u!4 &85016536
 Transform:
   m_ObjectHideFlags: 0
@@ -315,9 +316,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SpawnCount: 1000
   Prefab: {fileID: 473400868319800379, guid: f0bfaa8c05835ff4c8dde1dde5a11d43, type: 3}
-  IndividualRadius: 0.58
+  IndividualRadius: 0.5
   SpawnAreaDimensions: {x: 40, y: 25}
   SpawnOnStart: 1
+  InterestPoint: {x: 0, y: 0}
 --- !u!4 &1884985347
 Transform:
   m_ObjectHideFlags: 0
