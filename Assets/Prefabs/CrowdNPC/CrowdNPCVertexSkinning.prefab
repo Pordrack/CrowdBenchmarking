@@ -354,8 +354,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  MinDampening: 0
-  MaxDampening: 0
+  MinDampening: 0.1
+  MaxDampening: 1
   DampeningCurve:
     serializedVersion: 2
     m_Curve:
@@ -380,17 +380,17 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  MinPreferredRadius: 0
-  MaxPreferredRadius: 0
-  PreferredRadiusCurve:
+  MinFavDist: 0
+  MaxFavDist: 40
+  FavDistCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
+      inSlope: 1
       outSlope: 1
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
@@ -398,25 +398,25 @@ MonoBehaviour:
       time: 1
       value: 1
       inSlope: 1
-      outSlope: 0
-      tangentMode: 0
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  MinDampeningToPreferredRadiusRatio: 0
-  MaxDampeningToPreferredRadiusRatio: 0
-  DampeningToPreferredRadiusRatioCurve:
+  MinDampToFavDistRatio: 0.9
+  MaxDampToFavDistRatio: 1.1
+  DampToFavDistRatioCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
+      inSlope: 1
       outSlope: 1
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
@@ -424,8 +424,8 @@ MonoBehaviour:
       time: 1
       value: 1
       inSlope: 1
-      outSlope: 0
-      tangentMode: 0
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0

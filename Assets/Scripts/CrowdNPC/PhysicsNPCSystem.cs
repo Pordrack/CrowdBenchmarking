@@ -113,12 +113,22 @@ namespace CrowdNPC
                 currentVelocity.y = -currentVelocity.y;
             }
 
-            //Now we apply velocity, dampening etc. To each npc
-            
-            selfPosition += currentVelocity * DeltaTime;
-
+            //We also move in relation to our target range
             //Target position
+            float2 selfToPointOfInterest= CrowdSpawner.InterestPoint-selfPosition;
+            float2 pointOfInterestToSelf = selfPosition - CrowdSpawner.InterestPoint;
+            float distanceToPointOfInterest=math.distance(selfPosition, selfToPointOfInterest);
+            //float sqrDesiredRadius = npcData.PreferredRadius * npcData.PreferredRadius;
+            float2 selfToPointOfInterestDirection = selfToPointOfInterest * (1 / distanceToPointOfInterest);
+            float2 pointOfInterestToSelfDirection=pointOfInterestToSelf * (1 / distanceToPointOfInterest);
+            float2 desiredPosition= CrowdSpawner.InterestPoint + pointOfInterestToSelfDirection * npcData.PreferredRadius;
 
+            float2 desiredVelocity = (desiredPosition-selfPosition);
+
+
+            currentVelocity = math.lerp(currentVelocity, desiredVelocity, math.clamp(DeltaTime * npcData.Dampening,0,1));
+            selfPosition += currentVelocity * DeltaTime;
+             
             npcData.Velocity = currentVelocity;
             npcTransformAspect.worldPosition = new float3(selfPosition.x, npcTransformAspect.worldPosition.y, selfPosition.y);
         }

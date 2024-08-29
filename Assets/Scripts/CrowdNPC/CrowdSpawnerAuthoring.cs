@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace CrowdNPC
@@ -9,13 +10,6 @@ namespace CrowdNPC
     //The authoring composant can be used outside of ETS to spawn "regular" gameobjects
     public class CrowdSpawnerAuthoring : MonoBehaviour
     {
-        public int SpawnCount;
-        public GameObject Prefab;
-        public float IndividualRadius;
-        public Vector2 SpawnAreaDimensions;
-        public bool SpawnOnStart = true;
-        public Vector2 InterestPoint;
-
         #region Singleton pattern
         public static CrowdSpawnerAuthoring Instance { get; private set; }
         private void Awake()
@@ -29,15 +23,26 @@ namespace CrowdNPC
         }
         #endregion
 
-        public void Start()
-        {
-            if (SpawnOnStart)
-                Spawn();
-        }
+        public int SpawnCount;
+        public GameObject Prefab;
+        public float IndividualRadius;
+        public Vector2 SpawnAreaDimensions;
+        public bool SpawnOnStart = true;
+        public Vector2 InterestPoint;
 
-        public void Spawn()
+        public Vector2 ComputedInterestPoint()
         {
-            if(!gameObject.activeInHierarchy) return;
+            var spawnerPosition = new Vector2(transform.position.x, transform.position.z);
+            return spawnerPosition-0.5f*SpawnAreaDimensions+new Vector2(InterestPoint.x*SpawnAreaDimensions.x, InterestPoint.y*SpawnAreaDimensions.y);
+        }
+    public void Start()
+    {
+        if (SpawnOnStart)
+            Spawn();
+    }
+    public void Spawn()
+    {
+        if(!gameObject.activeInHierarchy) return;
             for (int i = 0; i < SpawnCount; i++)
             {
                 Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(-0.5f * SpawnAreaDimensions.x, 0.5f * SpawnAreaDimensions.x), 0, UnityEngine.Random.Range(-0.5f * SpawnAreaDimensions.y, 0.5f * SpawnAreaDimensions.y));
@@ -56,6 +61,10 @@ namespace CrowdNPC
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, IndividualRadius);
+            Gizmos.color = Color.red;
+            var twoDInterestPoint = ComputedInterestPoint();
+            Vector3 threeDInterestPoint=new Vector3(twoDInterestPoint.x,0,twoDInterestPoint.y);
+            Gizmos.DrawSphere(threeDInterestPoint, 0.25f);
         }
 #endif
 
@@ -74,6 +83,7 @@ namespace CrowdNPC
                     BottomLeftCorner = new float2(authoring.transform.position.x - authoring.SpawnAreaDimensions.x / 2, authoring.transform.position.z - authoring.SpawnAreaDimensions.y / 2),
                     TopRightCorner = new float2(authoring.transform.position.x + authoring.SpawnAreaDimensions.x / 2, authoring.transform.position.z + authoring.SpawnAreaDimensions.y / 2),
                     SpawnOnStart=authoring.SpawnOnStart,
+                    InterestPoint=authoring.ComputedInterestPoint()
                 });
             }
         }
@@ -89,6 +99,7 @@ namespace CrowdNPC
         public float2 BottomLeftCorner;
         public float2 TopRightCorner;
         public bool SpawnOnStart;
+        public float2 InterestPoint;
     }
 }
 

@@ -21,14 +21,15 @@ public class PhysicNPCAuthoring : MonoBehaviour
     public float MaxDampening;
     public AnimationCurve DampeningCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-    public float MinPreferredRadius;
-    public float MaxPreferredRadius;
-    public AnimationCurve PreferredRadiusCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    [Tooltip("The favorite distance from the interest point")]
+    public float MinFavDist;
+    public float MaxFavDist;
+    public AnimationCurve FavDistCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-    [Tooltip("Instead of being purely random, the preferred radius is linked to the dampening with a randomized ratio")]
-    public float MinDampeningToPreferredRadiusRatio;
-    public float MaxDampeningToPreferredRadiusRatio;
-    public AnimationCurve DampeningToPreferredRadiusRatioCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    [Tooltip("The system will generate a number x between 0 and 1, use it to get the dampening value on the curve, multiply x by the randomized ratio to get y, and use y to sample from the preferred ratio curve")]
+    public float MinDampToFavDistRatio;
+    public float MaxDampToFavDistRatio;
+    public AnimationCurve DampToFavDistRatioCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
 
     public class Baker: Baker<PhysicNPCAuthoring>
@@ -48,7 +49,16 @@ public class PhysicNPCAuthoring : MonoBehaviour
                 VelocityAmplitudeCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.VelocityAmplitudeCurve),
                 MinWeight = authoring.MinWeight,
                 MaxWeight = authoring.MaxWeight,
-                WeightCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.WeightCurve)
+                WeightCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.WeightCurve),
+                MinDampening = authoring.MinDampening,
+                MaxDampening = authoring.MaxDampening,
+                DampeningCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.DampeningCurve),
+                MinFavDist = authoring.MinFavDist,
+                MaxFavDist = authoring.MaxFavDist,
+                FavDistCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.FavDistCurve),
+                MinDampToFavDistRatio = authoring.MinDampToFavDistRatio,
+                MaxDampToFavDist = authoring.MaxDampToFavDistRatio,
+                DampeningToPreferredRadiusRatioCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.DampToFavDistRatioCurve)
             });
         }
     }
@@ -70,6 +80,18 @@ public class PhysicNPCRandomConstraints : IComponentData, IEnableableComponent
     public float MinWeight;
     public float MaxWeight;
     public BakedAnimationCurve WeightCurve;
+
+    public float MinDampening;
+    public float MaxDampening;
+    public BakedAnimationCurve DampeningCurve;
+
+    public float MinFavDist;
+    public float MaxFavDist;
+    public BakedAnimationCurve FavDistCurve;
+
+    public float MinDampToFavDistRatio;
+    public float MaxDampToFavDist;
+    public BakedAnimationCurve DampeningToPreferredRadiusRatioCurve;
 }
 
 public struct BakedAnimationCurve
