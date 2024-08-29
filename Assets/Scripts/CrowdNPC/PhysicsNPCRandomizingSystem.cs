@@ -9,12 +9,12 @@ using UnityEngine;
 
 namespace CrowdNPC.Kinemation
 {
-    public partial struct PhysicsNPCRandomizingSystem : ISystem
+    public partial class PhysicsNPCRandomizingSystem : SystemBase
     {
-        public void OnCreate(ref SystemState state)
+        protected override void OnCreate()
         {
-            state.RequireForUpdate<PhysicNPC>();
-            state.RequireForUpdate<PhysicNPCRandomConstraints>();
+            RequireForUpdate<PhysicNPC>();
+            RequireForUpdate<PhysicNPCRandomConstraints>();
         }
 
         public static float2 GetRandomDirection()
@@ -23,13 +23,13 @@ namespace CrowdNPC.Kinemation
             return new float2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
         }
 
-        public void OnUpdate(ref SystemState state)
+        protected override void OnUpdate()
         {
-            foreach ((var physicNPC, var physicNPCRandomConstraints, Entity entity) in SystemAPI.Query<RefRW<PhysicNPC>, RefRO<PhysicNPCRandomConstraints>>().WithEntityAccess())
+            foreach ((var physicNPC, var physicNPCRandomConstraints, Entity entity) in SystemAPI.Query<RefRW<PhysicNPC>, PhysicNPCRandomConstraints>().WithEntityAccess())
             {
-                physicNPC.ValueRW.Weight = physicNPCRandomConstraints.ValueRO.WeightCurve.Evaluate(UnityEngine.Random.value);
-                physicNPC.ValueRW.Velocity=physicNPCRandomConstraints.ValueRO.VelocityAmplitudeCurve.Evaluate(UnityEngine.Random.value)*GetRandomDirection();
-                state.EntityManager.SetComponentEnabled<PhysicNPCRandomConstraints>(entity, false);
+                physicNPC.ValueRW.Weight = physicNPCRandomConstraints.WeightCurve.Evaluate(UnityEngine.Random.value);
+                physicNPC.ValueRW.Velocity=physicNPCRandomConstraints.VelocityAmplitudeCurve.Evaluate(UnityEngine.Random.value)*GetRandomDirection();
+                EntityManager.SetComponentEnabled<PhysicNPCRandomConstraints>(entity, false);
             }    
         }
     }

@@ -33,12 +33,11 @@ public class PhysicNPCAuthoring : MonoBehaviour
             {
                 MinVelocityAmplitude = authoring.MinVelocityAmplitude,
                 MaxVelocityAmplitude = authoring.MaxVelocityAmplitude,
-                VelocityAmplitudeCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.VelocityAmplitudeCurve,),
+                VelocityAmplitudeCurve = authoring.VelocityAmplitudeCurve,
                 MinWeight = authoring.MinWeight,
                 MaxWeight = authoring.MaxWeight,
-                WeightCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.WeightCurve)
+                WeightCurve = authoring.WeightCurve
             });
-            SetComponentEnabled<PhysicNPCRandomConstraints>(entity,true);
         }
     }
 
@@ -58,7 +57,7 @@ public partial struct PhysicNPC : IComponentData
     public float2 Velocity;
 }
 
-public struct PhysicNPCRandomConstraints : IComponentData, IEnableableComponent
+public class PhysicNPCRandomConstraints : IComponentData, IEnableableComponent
 {
     public float MinVelocityAmplitude;
     public float MaxVelocityAmplitude;
@@ -66,35 +65,4 @@ public struct PhysicNPCRandomConstraints : IComponentData, IEnableableComponent
     public float MinWeight;
     public float MaxWeight;
     public BakedAnimationCurve WeightCurve;
-}
-
-public struct BakedAnimationCurve
-{
-    public int Precision;
-    public DynamicBuffer<AnimationCurveValue> Values;
-    public static BakedAnimationCurve BakeAnimationCurve(AnimationCurve v, EntityManager em,Entity e, int precision=1000)
-    {
-        var curve = new BakedAnimationCurve();
-        curve.Values= em.AddBuffer<AnimationCurveValue>(e);
-        for (int i = 0; i < precision; i++)
-        {
-            curve.Values.Add(new AnimationCurveValue() { Value = v.Evaluate(i * (1 / precision)) });
-        }
-        curve.Precision = precision;
-        return curve;
-    }
-
-    public float Evaluate(float t)
-    {
-        int index = (int)(t * Precision);
-        if (index >= Precision)
-            return Values[Values.Length - 1].Value;
-        return Values[index].Value;
-        //return 1;
-    }
-}
-
-public struct AnimationCurveValue : IBufferElementData
-{
-    public float Value;
 }
