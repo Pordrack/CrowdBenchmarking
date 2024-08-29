@@ -20,13 +20,12 @@ namespace CrowdNPC
             var direction = (1 / distance) * (otherBallPosition - selfBallPosition);
             var correction=(selfBallData.Radius + otherBallData.Radius - distance) / 2;
             selfBallPosition -= direction * correction;
-
             var v1 = math.dot(selfBallData.Velocity, direction);
             var v2 = math.dot(otherBallData.Velocity, direction);
-
+ 
             var newV1 = (selfBallData.Weight * v1 + otherBallData.Weight * v2 - otherBallData.Weight * (v1 - v2) * restitution) / (selfBallData.Weight + otherBallData.Weight);
 
-            selfBallData.Velocity += ((newV1 - v1));
+            selfBallData.Velocity += (direction * (newV1 - v1));
         }
 
         protected override void OnUpdate()
@@ -77,7 +76,6 @@ namespace CrowdNPC
 
         public void Execute(ref PhysicNPC npcData, in Collider npcCollider, TransformAspect npcTransformAspect, in Entity npcEntity)
         {
-            float2 currentVelocity = npcData.Velocity;
             float2 selfPosition = new float2(npcTransformAspect.worldPosition.x, npcTransformAspect.worldPosition.z);
             //We handle change of velocity due to collision with other npcs
             for(int i=0;i<OtherNPCsData.Length;i++)
@@ -98,6 +96,7 @@ namespace CrowdNPC
                 }
             }
 
+            float2 currentVelocity = npcData.Velocity;
             //We handle change of velocity due to collision with the external walls
             if (selfPosition.x - npcData.Radius < CrowdSpawner.BottomLeftCorner.x
                 || selfPosition.x + npcData.Radius > CrowdSpawner.TopRightCorner.x)

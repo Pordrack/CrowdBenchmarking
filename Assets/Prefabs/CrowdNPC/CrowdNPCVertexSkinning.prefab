@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Weight: 1
-  Radius: 2
+  Radius: 0.5
   MinVelocityAmplitude: 1
   MaxVelocityAmplitude: 5
   VelocityAmplitudeCurve:
