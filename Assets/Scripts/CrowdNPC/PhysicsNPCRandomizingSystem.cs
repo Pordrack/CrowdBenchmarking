@@ -27,8 +27,11 @@ namespace CrowdNPC.Kinemation
         {
             foreach ((var physicNPC, var physicNPCRandomConstraints, Entity entity) in SystemAPI.Query<RefRW<PhysicNPC>, PhysicNPCRandomConstraints>().WithEntityAccess())
             {
-                physicNPC.ValueRW.Weight = physicNPCRandomConstraints.WeightCurve.Evaluate(UnityEngine.Random.value);
-                physicNPC.ValueRW.Velocity=physicNPCRandomConstraints.VelocityAmplitudeCurve.Evaluate(UnityEngine.Random.value)*GetRandomDirection();
+                physicNPC.ValueRW.Weight = physicNPCRandomConstraints.MinWeight+
+                    physicNPCRandomConstraints.WeightCurve.Evaluate(UnityEngine.Random.value)*(physicNPCRandomConstraints.MaxWeight-physicNPCRandomConstraints.MinWeight);
+                float velocityAmplitude=physicNPCRandomConstraints.MinVelocityAmplitude+
+                    physicNPCRandomConstraints.VelocityAmplitudeCurve.Evaluate(UnityEngine.Random.value)*(physicNPCRandomConstraints.MaxVelocityAmplitude-physicNPCRandomConstraints.MinVelocityAmplitude);
+                physicNPC.ValueRW.Velocity= velocityAmplitude * GetRandomDirection();
                 EntityManager.SetComponentEnabled<PhysicNPCRandomConstraints>(entity, false);
             }    
         }

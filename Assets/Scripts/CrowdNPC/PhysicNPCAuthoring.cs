@@ -29,14 +29,14 @@ public class PhysicNPCAuthoring : MonoBehaviour
                 Radius = authoring.Radius,
                 Velocity= new float2(0,0)
             });
-            AddComponent(entity, new PhysicNPCRandomConstraints
+            AddComponentObject(entity, new PhysicNPCRandomConstraints
             {
                 MinVelocityAmplitude = authoring.MinVelocityAmplitude,
                 MaxVelocityAmplitude = authoring.MaxVelocityAmplitude,
-                VelocityAmplitudeCurve = authoring.VelocityAmplitudeCurve,
+                VelocityAmplitudeCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.VelocityAmplitudeCurve),
                 MinWeight = authoring.MinWeight,
                 MaxWeight = authoring.MaxWeight,
-                WeightCurve = authoring.WeightCurve
+                WeightCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.WeightCurve)
             });
         }
     }
@@ -65,4 +65,32 @@ public class PhysicNPCRandomConstraints : IComponentData, IEnableableComponent
     public float MinWeight;
     public float MaxWeight;
     public BakedAnimationCurve WeightCurve;
+}
+
+public struct BakedAnimationCurve
+{
+    public float[] Values; 
+    public int Precision;
+
+    public static BakedAnimationCurve BakeAnimationCurve(AnimationCurve curve, int precision=1000)
+    {
+        var bakedCurve = new BakedAnimationCurve();
+        bakedCurve.Values = new float[precision];
+        for (int i = 0; i < precision; i++)
+        {
+            bakedCurve.Values[i] = curve.Evaluate((float)i/(float)precision);
+        }
+        bakedCurve.Precision = precision;
+        return bakedCurve;
+    }
+
+    public float Evaluate(float t)
+    {
+        int index=Mathf.FloorToInt(t*Precision);
+        if (index < Precision)
+        {
+            return Values[index];
+        }
+        return Values[Precision-1];
+    }
 }

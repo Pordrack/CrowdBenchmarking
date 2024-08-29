@@ -189,6 +189,46 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8690675091231656140, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
+        type: 3}
+      propertyPath: WeightCurve.m_Curve.Array.data[0].inSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690675091231656140, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
+        type: 3}
+      propertyPath: WeightCurve.m_Curve.Array.data[1].outSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690675091231656140, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
+        type: 3}
+      propertyPath: WeightCurve.m_Curve.Array.data[0].tangentMode
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690675091231656140, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
+        type: 3}
+      propertyPath: WeightCurve.m_Curve.Array.data[1].tangentMode
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690675091231656140, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
+        type: 3}
+      propertyPath: VelocityAmplitudeCurve.m_Curve.Array.data[0].inSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690675091231656140, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
+        type: 3}
+      propertyPath: VelocityAmplitudeCurve.m_Curve.Array.data[1].outSlope
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690675091231656140, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
+        type: 3}
+      propertyPath: VelocityAmplitudeCurve.m_Curve.Array.data[0].tangentMode
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690675091231656140, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
+        type: 3}
+      propertyPath: VelocityAmplitudeCurve.m_Curve.Array.data[1].tangentMode
+      value: 34
+      objectReference: {fileID: 0}
     - target: {fileID: 9094228040836082415, guid: f0bfaa8c05835ff4c8dde1dde5a11d43,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -273,7 +313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d05403e70b268434d95b32ad284f7984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnCount: 1000
+  SpawnCount: 5
   Prefab: {fileID: 473400868319800379, guid: f0bfaa8c05835ff4c8dde1dde5a11d43, type: 3}
   IndividualRadius: 0.58
   SpawnAreaDimensions: {x: 20, y: 16.4}
