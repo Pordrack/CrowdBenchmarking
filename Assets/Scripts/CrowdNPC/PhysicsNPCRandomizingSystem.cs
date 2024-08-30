@@ -27,21 +27,33 @@ namespace CrowdNPC.Kinemation
         {
             foreach ((var physicNPC, var physicNPCRandomConstraints, Entity entity) in SystemAPI.Query<RefRW<PhysicNPC>, PhysicNPCRandomConstraints>().WithEntityAccess())
             {
-                physicNPC.ValueRW.Weight = physicNPCRandomConstraints.MinWeight+
-                    physicNPCRandomConstraints.WeightCurve.Evaluate(UnityEngine.Random.value)*(physicNPCRandomConstraints.MaxWeight-physicNPCRandomConstraints.MinWeight);
                 float velocityAmplitude=physicNPCRandomConstraints.MinVelocityAmplitude+
                     physicNPCRandomConstraints.VelocityAmplitudeCurve.Evaluate(UnityEngine.Random.value)*(physicNPCRandomConstraints.MaxVelocityAmplitude-physicNPCRandomConstraints.MinVelocityAmplitude);
                 physicNPC.ValueRW.Velocity= velocityAmplitude * GetRandomDirection();
+
                 float dampeningCurveResult=UnityEngine.Random.value;
                 float dampening=physicNPCRandomConstraints.MinDampening+
                     physicNPCRandomConstraints.DampeningCurve.Evaluate(dampeningCurveResult)*(physicNPCRandomConstraints.MaxDampening-physicNPCRandomConstraints.MinDampening);
                 physicNPC.ValueRW.Dampening=dampening;
+
                 float dampeningToRadiusRatio=physicNPCRandomConstraints.MinDampToFavDistRatio+
-                    physicNPCRandomConstraints.DampeningToPreferredRadiusRatioCurve.Evaluate(dampeningCurveResult)*(physicNPCRandomConstraints.MaxDampToFavDist-physicNPCRandomConstraints.MinDampToFavDistRatio);
+                    physicNPCRandomConstraints.DampToFavDistRatioCurve.Evaluate(dampeningCurveResult)*(physicNPCRandomConstraints.MaxDampToFavDistRatio-physicNPCRandomConstraints.MinDampToFavDistRatio);
                 float preferredRadiusCurveX=dampeningCurveResult*dampeningToRadiusRatio;
                 float preferredRadius=physicNPCRandomConstraints.MinFavDist+
                     physicNPCRandomConstraints.FavDistCurve.Evaluate(preferredRadiusCurveX)*(physicNPCRandomConstraints.MaxFavDist-physicNPCRandomConstraints.MinFavDist);
                 physicNPC.ValueRW.PreferredRadius=preferredRadius;
+
+                float dampeningToWeightRatio = physicNPCRandomConstraints.MinDampToWeightRatio +
+                    physicNPCRandomConstraints.DampToWeightRatioCurve.Evaluate(dampeningCurveResult) * (physicNPCRandomConstraints.MaxDampToWeightRatio - physicNPCRandomConstraints.MinDampToWeightRatio);
+                float weightCurveX = dampeningCurveResult * dampeningToWeightRatio;
+                float weight=physicNPCRandomConstraints.MinWeight+
+                    physicNPCRandomConstraints.WeightCurve.Evaluate(weightCurveX)*(physicNPCRandomConstraints.MaxWeight-physicNPCRandomConstraints.MinWeight);
+                physicNPC.ValueRW.Weight=weight;
+
+                float accelerationToDesiredLocation=physicNPCRandomConstraints.MinAccelToDesiredLocation+
+                    physicNPCRandomConstraints.AccelToDesiredLocationCurve.Evaluate(UnityEngine.Random.value)*(physicNPCRandomConstraints.MaxAccelToDesiredLocation-physicNPCRandomConstraints.MinAccelToDesiredLocation);
+                physicNPC.ValueRW.AccelerationToDesiredLocation=accelerationToDesiredLocation;
+
                 string newBackstageItemID = System.Guid.NewGuid().ToString();
                 EntityManager.SetComponentEnabled<PhysicNPCRandomConstraints>(entity, false);
             }    

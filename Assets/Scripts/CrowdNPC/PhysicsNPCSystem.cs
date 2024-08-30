@@ -86,7 +86,6 @@ namespace CrowdNPC
                 if (npcEntity == otherEntity) continue;
                 // DistanceBetween() returns true if the found distance is less than the maximum distance. 
                 // Intersections will have negative distances, so a maximum distance of 0f will only return true if the colliders intersect.
-                var selfWorldTransform = npcTransformAspect.worldTransform;
                 var otherTransform = OtherNPCsTransforms[i];
                 float2 otherPosition = new float2(otherTransform.worldTransform.position.x, otherTransform.worldTransform.position.z);
                 if (SqrDistance(selfPosition, otherPosition) < sqrCollisionDistance)
@@ -118,15 +117,23 @@ namespace CrowdNPC
             float2 selfToPointOfInterest= CrowdSpawner.InterestPoint-selfPosition;
             float2 pointOfInterestToSelf = selfPosition - CrowdSpawner.InterestPoint;
             float distanceToPointOfInterest=math.distance(selfPosition, selfToPointOfInterest);
-            //float sqrDesiredRadius = npcData.PreferredRadius * npcData.PreferredRadius;
-            float2 selfToPointOfInterestDirection = selfToPointOfInterest * (1 / distanceToPointOfInterest);
             float2 pointOfInterestToSelfDirection=pointOfInterestToSelf * (1 / distanceToPointOfInterest);
             float2 desiredPosition= CrowdSpawner.InterestPoint + pointOfInterestToSelfDirection * npcData.PreferredRadius;
 
-            float2 desiredVelocity = (desiredPosition-selfPosition);
+            float2 desiredDirection = math.normalize(desiredPosition-selfPosition);
 
-
-            currentVelocity = math.lerp(currentVelocity, desiredVelocity, math.clamp(DeltaTime * npcData.Dampening,0,1));
+            //Do a new system where you dampen to 0, except for the part of the vector that is along the desired velocity, and if you're slower than the approaching speed, you actively accelerate
+            float velocityInDesiredDirection=math.dot(currentVelocity, desiredDirection);
+            currentVelocity = math.lerp(currentVelocity, float2.zero, math.clamp(DeltaTime * npcData.Dampening,0,1));
+            float velocityPerpendicularToDesiredDirection = math.dot(currentVelocity, new float2(-desiredDirection.y, desiredDirection.x));
+            if (velocityInDesiredDirection < npcData.MaxVelocityToDesiredLocation)
+            {
+                velocityInDesiredDirection += DeltaTime * npcData.AccelerationToDesiredLocation;
+            }
+            if(velocityInDesiredDirection>0)
+            {
+                currentVelocity = desiredDirection * velocityInDesiredDirection + new float2(-desiredDirection.y, desiredDirection.x) * velocityPerpendicularToDesiredDirection;
+            }
             selfPosition += currentVelocity * DeltaTime;
              
             npcData.Velocity = currentVelocity;

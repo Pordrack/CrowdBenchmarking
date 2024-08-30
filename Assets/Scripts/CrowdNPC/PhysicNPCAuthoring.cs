@@ -13,13 +13,18 @@ public class PhysicNPCAuthoring : MonoBehaviour
     public float MinVelocityAmplitude = 0;
     public float MaxVelocityAmplitude = 1;
     public AnimationCurve VelocityAmplitudeCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    public float MinWeight = 1;
-    public float MaxWeight = 1;
-    public AnimationCurve WeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
     public float MinDampening;
     public float MaxDampening;
     public AnimationCurve DampeningCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+    public float MinAccelToDesiredLocation;
+    public float MaxAccelToDesiredLocation;
+    public AnimationCurve AccelToDesiredLocationCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+    public float MinMaxVelocityToDesiredLocation;
+    public float MaxMaxVelocityToDesiredLocation;
+    public AnimationCurve MaxVelocityToDesiredLocationCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
     [Tooltip("The favorite distance from the interest point")]
     public float MinFavDist;
@@ -27,9 +32,18 @@ public class PhysicNPCAuthoring : MonoBehaviour
     public AnimationCurve FavDistCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
     [Tooltip("The system will generate a number x between 0 and 1, use it to get the dampening value on the curve, multiply x by the randomized ratio to get y, and use y to sample from the preferred ratio curve")]
-    public float MinDampToFavDistRatio;
-    public float MaxDampToFavDistRatio;
+    public float MinDampToFavDistRatio=0.9f;
+    public float MaxDampToFavDistRatio=1.1f;
     public AnimationCurve DampToFavDistRatioCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+    public float MinWeight = 1;
+    public float MaxWeight = 1;
+    public AnimationCurve WeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+    [Tooltip("Same things with the weight")]
+    public float MinDampToWeightRatio = 0.5f;
+    public float MaxDampToWeightRatio = 1.5f;
+    public AnimationCurve DampToWeightRatioCurve= AnimationCurve.Linear(0, 0,1,1);
 
 
     public class Baker: Baker<PhysicNPCAuthoring>
@@ -57,8 +71,17 @@ public class PhysicNPCAuthoring : MonoBehaviour
                 MaxFavDist = authoring.MaxFavDist,
                 FavDistCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.FavDistCurve),
                 MinDampToFavDistRatio = authoring.MinDampToFavDistRatio,
-                MaxDampToFavDist = authoring.MaxDampToFavDistRatio,
-                DampeningToPreferredRadiusRatioCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.DampToFavDistRatioCurve)
+                MaxDampToFavDistRatio = authoring.MaxDampToFavDistRatio,
+                DampToFavDistRatioCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.DampToFavDistRatioCurve),
+                MinDampToWeightRatio = authoring.MinDampToWeightRatio,
+                MaxDampToWeightRatio = authoring.MaxDampToWeightRatio,
+                DampToWeightRatioCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.DampToWeightRatioCurve),
+                MinAccelToDesiredLocation = authoring.MinAccelToDesiredLocation,
+                MaxAccelToDesiredLocation = authoring.MaxAccelToDesiredLocation,
+                AccelToDesiredLocationCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.AccelToDesiredLocationCurve),
+                MinMaxVelocityToDesiredLocation = authoring.MinMaxVelocityToDesiredLocation,
+                MaxMaxVelocityToDesiredLocation = authoring.MaxMaxVelocityToDesiredLocation,
+                MaxVelocityToDesiredLocationCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.MaxVelocityToDesiredLocationCurve)
             });
         }
     }
@@ -70,6 +93,8 @@ public partial struct PhysicNPC : IComponentData
     public float2 Velocity;
     public float Dampening;
     public float PreferredRadius;
+    public float AccelerationToDesiredLocation;
+    public float MaxVelocityToDesiredLocation;
 }
 
 public class PhysicNPCRandomConstraints : IComponentData, IEnableableComponent
@@ -90,8 +115,20 @@ public class PhysicNPCRandomConstraints : IComponentData, IEnableableComponent
     public BakedAnimationCurve FavDistCurve;
 
     public float MinDampToFavDistRatio;
-    public float MaxDampToFavDist;
-    public BakedAnimationCurve DampeningToPreferredRadiusRatioCurve;
+    public float MaxDampToFavDistRatio;
+    public BakedAnimationCurve DampToFavDistRatioCurve;
+
+    public float MinDampToWeightRatio;
+    public float MaxDampToWeightRatio;
+    public BakedAnimationCurve DampToWeightRatioCurve;
+
+    public float MinAccelToDesiredLocation;
+    public float MaxAccelToDesiredLocation;
+    public BakedAnimationCurve AccelToDesiredLocationCurve;
+
+    public float MinMaxVelocityToDesiredLocation;
+    public float MaxMaxVelocityToDesiredLocation;
+    public BakedAnimationCurve MaxVelocityToDesiredLocationCurve;
 }
 
 public struct BakedAnimationCurve

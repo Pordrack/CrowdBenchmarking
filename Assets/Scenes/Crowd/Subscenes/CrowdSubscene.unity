@@ -317,7 +317,7 @@ MonoBehaviour:
   SpawnCount: 1000
   Prefab: {fileID: 473400868319800379, guid: f0bfaa8c05835ff4c8dde1dde5a11d43, type: 3}
   IndividualRadius: 0.5
-  SpawnAreaDimensions: {x: 80, y: 40}
+  SpawnAreaDimensions: {x: 90, y: 45}
   SpawnOnStart: 1
   InterestPoint: {x: 0.5, y: 0}
 --- !u!4 &1884985347
