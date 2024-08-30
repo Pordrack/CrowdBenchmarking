@@ -10,9 +10,9 @@ using static UnityEngine.EventSystems.EventTrigger;
 public class PhysicNPCAuthoring : MonoBehaviour
 {
     public float Weight = 1;
-    public float MinVelocityAmplitude = 0;
-    public float MaxVelocityAmplitude = 1;
-    public AnimationCurve VelocityAmplitudeCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    public float MinInitialVelocityAmplitude = 0;
+    public float MaxInitialVelocityAmplitude = 1;
+    public AnimationCurve InitialVelocityAmplitudeCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
     public float MinDampening;
     public float MaxDampening;
@@ -58,9 +58,9 @@ public class PhysicNPCAuthoring : MonoBehaviour
             });
             AddComponentObject(entity, new PhysicNPCRandomConstraints
             {
-                MinVelocityAmplitude = authoring.MinVelocityAmplitude,
-                MaxVelocityAmplitude = authoring.MaxVelocityAmplitude,
-                VelocityAmplitudeCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.VelocityAmplitudeCurve),
+                MinVelocityAmplitude = authoring.MinInitialVelocityAmplitude,
+                MaxVelocityAmplitude = authoring.MaxInitialVelocityAmplitude,
+                VelocityAmplitudeCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.InitialVelocityAmplitudeCurve),
                 MinWeight = authoring.MinWeight,
                 MaxWeight = authoring.MaxWeight,
                 WeightCurve = BakedAnimationCurve.BakeAnimationCurve(authoring.WeightCurve),

@@ -1,9 +1,14 @@
 ﻿using Latios.Transforms;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEditor;
+using UnityEngine;
 
 namespace CrowdNPC
 {
@@ -11,9 +16,34 @@ namespace CrowdNPC
     public partial class PhysicsNPCSystem : SystemBase
     {
         static float elasticity = 0f;
+        public Dictionary<Guid, Obstacle> ObstaclesDict;
+
+        public void RegisterObstacle(Guid guid, Vector2 position,float radius)
+        {
+            if (ObstaclesDict == null)
+            {
+                ObstaclesDict = new Dictionary<Guid, Obstacle>();
+            }
+            ObstaclesDict[guid] = new Obstacle() { Position = position, Radius = radius };
+        }
+
+        public void RemoveObstacle(Guid guid)
+        {
+            if (ObstaclesDict == null) return;
+            if (!ObstaclesDict.ContainsKey(guid)) return;
+            if (ObstaclesDict.Remove(guid)) return;
+        }
+
+        public void UpdateObstacle(Guid guid, Vector2 pos)
+        {
+            if (ObstaclesDict == null) return;
+            if (!ObstaclesDict.ContainsKey(guid)) return;
+            Obstacle obstacle = ObstaclesDict[guid];
+            ObstaclesDict[guid]= new Obstacle() { Position = pos, Radius = obstacle.Radius };
+        }
 
         //Take self npc, other npc, elasticity, and returns new velocity for self ball
-        public static void HandleBallCollision(ref PhysicNPC selfBallData, ref float2 selfBallPosition, in PhysicNPC otherBallData, in float2 otherBallPosition, float radius, float restitution)
+        public static void HandleNPCCollision(ref PhysicNPC selfBallData, ref float2 selfBallPosition, in PhysicNPC otherBallData, in float2 otherBallPosition, float radius, float restitution)
         {
             var distance = math.distance(selfBallPosition, otherBallPosition);
             var direction = (1 / distance) * (otherBallPosition - selfBallPosition);
@@ -25,6 +55,26 @@ namespace CrowdNPC
             var newV1 = (selfBallData.Weight * v1 + otherBallData.Weight * v2 - otherBallData.Weight * (v1 - v2) * restitution) / (selfBallData.Weight + otherBallData.Weight);
 
             selfBallData.Velocity += (direction * (newV1 - v1));
+        }
+
+        public static void HandleObstacleCollision(ref PhysicNPC selfBallData, ref float2 selfBallPosition, in float2 obstaclePosition, in float obstacleRadius, float ballRadius)
+        {
+            var distance=math.distance(selfBallPosition,obstaclePosition);
+            var direction = (1 / distance) * (selfBallPosition - obstaclePosition);
+            var perpendicularToDirection = new float2(-direction.y, direction.x);
+            var correction=(obstacleRadius+ballRadius - distance) / 2;
+            selfBallPosition+= direction * correction;
+            var vAlongCollisionDirection=math.dot(selfBallData.Velocity,direction);
+            var vAlongCollisionPerpendicular=math.dot(selfBallData.Velocity, perpendicularToDirection);
+            //We invert the part of the vector that is along the collision direction, while not touching the other
+            //It's effectively the behaviour of the wall collision except the wall can have any "direction"Z
+            var newVelocity = vAlongCollisionDirection * -1 * direction + vAlongCollisionPerpendicular * perpendicularToDirection;
+            selfBallData.Velocity = newVelocity;
+        }
+
+        protected override void OnCreate()
+        {
+            ObstaclesDict = new Dictionary<Guid, Obstacle>();
         }
 
         protected override void OnUpdate()
@@ -40,6 +90,7 @@ namespace CrowdNPC
             var otherNPCsDatas=otherNPCs.ToComponentDataArray<PhysicNPC>(Allocator.TempJob);
             var otherNPCsTransforms=otherNPCs.ToComponentDataArray<WorldTransform>(Allocator.TempJob);
             var otherNPCsEntities=otherNPCs.ToEntityArray(Allocator.TempJob);
+            var ObstaclesNativeArray = new NativeArray<Obstacle>(ObstaclesDict.Values.ToArray(), Allocator.TempJob);
 
             var npcUpdateJob = new PhysicNPCUpdateJob()
             {
@@ -48,10 +99,17 @@ namespace CrowdNPC
                 Elasticity=elasticity,
                 OtherNPCsData = otherNPCsDatas,
                 OtherNPCsTransforms = otherNPCsTransforms,
-                OtherNPCsEntities = otherNPCsEntities
+                OtherNPCsEntities = otherNPCsEntities,
+                Obstacles= ObstaclesNativeArray,
             };
             npcUpdateJob.ScheduleParallel();
         }
+    }
+
+    public struct Obstacle : IComponentData
+    {
+        public float2 Position;
+        public float Radius;
     }
 
     [BurstCompile]
@@ -59,12 +117,14 @@ namespace CrowdNPC
     {
         public float DeltaTime;
         public CrowdSpawner CrowdSpawner;
-        [NativeDisableParallelForRestriction]
+        [Unity.Collections.ReadOnly]
         public NativeArray<PhysicNPC> OtherNPCsData;
-        [NativeDisableParallelForRestriction]
+        [Unity.Collections.ReadOnly]
         public NativeArray<WorldTransform> OtherNPCsTransforms;
-        [NativeDisableParallelForRestriction]
+        [Unity.Collections.ReadOnly]
         public NativeArray<Entity> OtherNPCsEntities;
+        [Unity.Collections.ReadOnly]
+        public NativeArray<Obstacle> Obstacles;
 
         public float Elasticity;
 
@@ -91,9 +151,16 @@ namespace CrowdNPC
                 if (SqrDistance(selfPosition, otherPosition) < sqrCollisionDistance)
                 {
                     var otherData = OtherNPCsData[i];
-                    PhysicsNPCSystem.HandleBallCollision(ref npcData, ref selfPosition, otherData, otherPosition, radius, 1 - Elasticity);
+                    PhysicsNPCSystem.HandleNPCCollision(ref npcData, ref selfPosition, otherData, otherPosition, radius, 1 - Elasticity);
                     break;
                 }
+            }
+
+            //And with external obstacles
+            foreach(var obstacle in Obstacles)
+            {
+                if(SqrDistance(selfPosition, obstacle.Position) >= (radius + obstacle.Radius) * (radius + obstacle.Radius)) continue;
+                PhysicsNPCSystem.HandleObstacleCollision(ref npcData, ref selfPosition, obstacle.Position, obstacle.Radius, radius);
             }
 
             float2 currentVelocity = npcData.Velocity;
