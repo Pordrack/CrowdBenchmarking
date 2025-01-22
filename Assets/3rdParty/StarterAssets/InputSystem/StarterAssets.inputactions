@@ -238,6 +238,17 @@
                     "action": "FreeLockMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1d12b67b-09ad-4df8-bbaf-fbd5234e241e",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FreeLockMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
