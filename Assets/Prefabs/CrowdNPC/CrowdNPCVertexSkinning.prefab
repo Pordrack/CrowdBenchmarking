@@ -302,9 +302,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Weight: 1
-  MinInitialVelocityAmplitude: 0
-  MaxInitialVelocityAmplitude: 1
-  InitialVelocityAmplitudeCurve:
+  MinVelocityAmplitude: 1
+  MaxVelocityAmplitude: 5
+  VelocityAmplitudeCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -328,7 +328,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  MinDampening: 0.05
+  MinDampening: 0.1
   MaxDampening: 1
   DampeningCurve:
     serializedVersion: 2
@@ -355,7 +355,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   MinAccelToDesiredLocation: 10
-  MaxAccelToDesiredLocation: 40
+  MaxAccelToDesiredLocation: 50
   AccelToDesiredLocationCurve:
     serializedVersion: 2
     m_Curve:
@@ -381,7 +381,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   MinMaxVelocityToDesiredLocation: 10
-  MaxMaxVelocityToDesiredLocation: 40
+  MaxMaxVelocityToDesiredLocation: 50
   MaxVelocityToDesiredLocationCurve:
     serializedVersion: 2
     m_Curve:
@@ -414,20 +414,11 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 3.0166667
-      outSlope: 3.0166667
-      tangentMode: 0
+      inSlope: 0.7960039
+      outSlope: 0.7960039
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.051848434
-    - serializedVersion: 3
-      time: 0.10434065
-      value: 0.43124095
-      inSlope: 0.54826707
-      outSlope: 0.54826707
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.31580842
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 0.8524635
