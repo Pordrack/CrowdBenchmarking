@@ -32,16 +32,16 @@ namespace CrowdNPC
         public Vector2 ComputedInterestPoint()
         {
             var spawnerPosition = new Vector2(transform.position.x, transform.position.z);
-            return spawnerPosition-0.5f*SpawnAreaDimensions+new Vector2(InterestPoint.x*SpawnAreaDimensions.x, InterestPoint.y*SpawnAreaDimensions.y);
+            return spawnerPosition - 0.5f * SpawnAreaDimensions + new Vector2(InterestPoint.x * SpawnAreaDimensions.x, InterestPoint.y * SpawnAreaDimensions.y);
         }
-    public void Start()
-    {
-        if (SpawnOnStart)
-            Spawn();
-    }
-    public void Spawn()
-    {
-        if(!gameObject.activeInHierarchy) return;
+        public void Start()
+        {
+            if (SpawnOnStart)
+                Spawn();
+        }
+        public void Spawn()
+        {
+            if (!gameObject.activeInHierarchy) return;
             for (int i = 0; i < SpawnCount; i++)
             {
                 Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(-0.5f * SpawnAreaDimensions.x, 0.5f * SpawnAreaDimensions.x), 0, UnityEngine.Random.Range(-0.5f * SpawnAreaDimensions.y, 0.5f * SpawnAreaDimensions.y));
@@ -62,7 +62,7 @@ namespace CrowdNPC
             Gizmos.DrawWireSphere(transform.position, IndividualRadius);
             Gizmos.color = Color.red;
             var twoDInterestPoint = ComputedInterestPoint();
-            Vector3 threeDInterestPoint=new Vector3(twoDInterestPoint.x,0,twoDInterestPoint.y);
+            Vector3 threeDInterestPoint = new Vector3(twoDInterestPoint.x, 0, twoDInterestPoint.y);
             Gizmos.DrawSphere(threeDInterestPoint, 0.25f);
         }
 #endif
@@ -72,7 +72,7 @@ namespace CrowdNPC
             public override void Bake(CrowdSpawnerAuthoring authoring)
             {
                 Entity entity = GetEntity(TransformUsageFlags.None);
-                AddComponent(entity,new CrowdSpawner
+                AddComponent(entity, new CrowdSpawner
                 {
                     PrefabEntity = GetEntity(authoring.Prefab, TransformUsageFlags.Dynamic),
                     SpawnCount = authoring.SpawnCount,
@@ -81,8 +81,8 @@ namespace CrowdNPC
                     SpawnerPosition = new float3(authoring.transform.position.x, authoring.transform.position.y, authoring.transform.position.z),
                     BottomLeftCorner = new float2(authoring.transform.position.x - authoring.SpawnAreaDimensions.x / 2, authoring.transform.position.z - authoring.SpawnAreaDimensions.y / 2),
                     TopRightCorner = new float2(authoring.transform.position.x + authoring.SpawnAreaDimensions.x / 2, authoring.transform.position.z + authoring.SpawnAreaDimensions.y / 2),
-                    SpawnOnStart=authoring.SpawnOnStart,
-                    InterestPoint=authoring.ComputedInterestPoint()
+                    SpawnOnStart = authoring.SpawnOnStart,
+                    InterestPoint = authoring.ComputedInterestPoint()
                 });
             }
         }
